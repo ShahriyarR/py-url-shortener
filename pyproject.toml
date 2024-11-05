@@ -3,7 +3,7 @@ requires = ["flit_core==3.8.0"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "pytemplate"
+name = "pyurlshortener"
 authors = [
     { name = "rzayev sehriyar", email = "rzayev.sehriyar@gmail.com" },
 ]
