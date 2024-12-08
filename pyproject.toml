@@ -10,7 +10,9 @@ authors = [
 dynamic = ["version"]
 description = "URL Shortener"
 # Add here the production dependencies
-dependencies = []
+dependencies = [
+    "pydantic ~=2.10.3",
+]
 
 [project.optional-dependencies]
 dev = [
