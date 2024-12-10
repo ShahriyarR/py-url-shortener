@@ -2,6 +2,6 @@
 POST  http://127.0.0.1:8080/v1/api/url
 Content-Type: application/json
 
-{ "original_url": "https://google.com", "created_by": "Shako" }
+{ "original_url": "https://linkedin.com", "created_by": "Shako" }
 
 ###
