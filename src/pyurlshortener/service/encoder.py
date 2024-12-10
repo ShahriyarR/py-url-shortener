@@ -36,4 +36,4 @@ def decode(string: str, alphabet: str = BASE62) -> int:
         num += alphabet.index(char) * (base**power)
         index += 1
 
-    return num
+    return int(num)
