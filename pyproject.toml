@@ -38,7 +38,7 @@ test = [
 [tool.isort]
 profile = "black"
 line_length = 120
-py_version = 311
+py_version = 312
 order_by_type = false
 skip = [".gitignore", ".dockerignore"]
 extend_skip = [".md", ".json"]
@@ -52,7 +52,7 @@ exclude = ["__init__.py"]
 
 [tool.black]
 line-length = 120
-target-version = ['py311']
+target-version = ['py312']
 include = '\.pyi?$'
 
 [tool.bandit]
