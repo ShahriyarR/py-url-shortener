@@ -11,7 +11,7 @@ bp = Blueprint("URLShortener", version=1, url_prefix="/api")
 async def get_original_url(request, cache: RedisCache):
     original_url = request.json.get("original_url")
     created_by = request.json.get("created_by")
-    shortened_, shortened_id = shortened(original_url, created_by, request.app.ctx.counter)
+    shortened_, shortened_id = shortened(original_url, created_by, cache)
     cache.set(shortened_id, original_url)
     return json({"short_url": f"{shortened_.short_url}"})
 

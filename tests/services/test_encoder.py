@@ -4,8 +4,8 @@ from pyurlshortener.service.encoder import decode, encode
 
 def test_global_counter_and_encoder():
     counter = ThreadUnsafeCounter()
-    counter.increment()
-    val = counter.value()
+    counter.increment_counter()
+    val = counter.get_counter()
     assert encode(val) == "g9"
 
 

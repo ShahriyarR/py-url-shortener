@@ -3,8 +3,8 @@ from typing import Any, Optional
 
 import redis
 
-from pyurlshortener.configurator.settings.base import REDIS_DB, REDIS_HOST, REDIS_PORT
-from src.pyurlshortener.configurator.settings.base import REDIS_PASSWORD
+from pyurlshortener.configurator.settings.base import REDIS_HOST, REDIS_PORT
+from src.pyurlshortener.configurator.settings.base import REDIS_CACHE_DB, REDIS_COUNTER_DB, REDIS_PASSWORD
 
 
 class RedisCache:
@@ -12,14 +12,18 @@ class RedisCache:
         self,
         host: str = REDIS_HOST,
         port: int = REDIS_PORT,
-        db: int = REDIS_DB,
+        cache_db: int = REDIS_CACHE_DB,
+        counter_db: int = REDIS_COUNTER_DB,
         password: Optional[str] = REDIS_PASSWORD,
     ):
-        self.client = redis.StrictRedis(host=host, port=port, db=db, password=password, decode_responses=True)
+        self.client = redis.StrictRedis(host=host, port=port, db=cache_db, password=password, decode_responses=True)
+        self.counter_client = redis.StrictRedis(
+            host=host, port=port, db=counter_db, password=password, decode_responses=True
+        )
 
     @classmethod
     def create(cls):
-        return cls(REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD)
+        return cls(REDIS_HOST, REDIS_PORT, REDIS_CACHE_DB, REDIS_COUNTER_DB, REDIS_PASSWORD)
 
     def set(self, key: str, value: Any, expire: Optional[int] = None) -> bool:
         """
@@ -80,6 +84,48 @@ class RedisCache:
         except Exception as e:
             print(f"Error clearing Redis cache: {e}")
             return False
+
+    def increment_counter(self, key: str, amount: int = 1) -> int:
+        """
+        Increment a counter by a specified amount.
+
+        :param key: The key of the counter.
+        :param amount: The amount to increment the counter by.
+        :return: The new value of the counter.
+        """
+        try:
+            return self.counter_client.incrby(key, amount)
+        except Exception as e:
+            print(f"Error incrementing counter in Redis: {e}")
+            return 0
+
+    def decrement_counter(self, key: str, amount: int = 1) -> int:
+        """
+        Decrement a counter by a specified amount.
+
+        :param key: The key of the counter.
+        :param amount: The amount to decrement the counter by.
+        :return: The new value of the counter.
+        """
+        try:
+            return self.counter_client.decrby(key, amount)
+        except Exception as e:
+            print(f"Error decrementing counter in Redis: {e}")
+            return 0
+
+    def get_counter(self, key: str) -> int:
+        """
+        Get the current value of a counter.
+
+        :param key: The key of the counter.
+        :return: The current value of the counter.
+        """
+        try:
+            value = self.counter_client.get(key)
+            return int(value) if value is not None else 0
+        except Exception as e:
+            print(f"Error getting counter value from Redis: {e}")
+            return 0
 
 
 # Example usage:

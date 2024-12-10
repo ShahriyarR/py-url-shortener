@@ -7,8 +7,8 @@ class ThreadUnsafeCounter:
     def create(cls):
         return cls()
 
-    def increment(self):
+    def increment_counter(self, key: str | None = None, amount: int = 1):
         self._counter += 1
 
-    def value(self):
+    def get_counter(self, key: str | None = None):
         return self._counter
