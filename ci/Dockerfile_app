@@ -1,0 +1,12 @@
+FROM python:3.12-bullseye
+
+WORKDIR /app
+RUN apt-get update -y && apt-get install make -y
+
+COPY ./ .
+RUN python3.12 -m venv .venv
+RUN .venv/bin/pip install --upgrade pip
+RUN make install-flit
+RUN FLIT_ROOT_INSTALL=1 make install-dev
+
+ENTRYPOINT make run
