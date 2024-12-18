@@ -1,5 +1,5 @@
 ### POST request to example server
-POST  http://127.0.0.1:8080/v1/api/url
+POST  http://127.0.0.1/url
 Content-Type: application/json
 
 { "original_url": "https://linkedin.com", "created_by": "Shako" }
