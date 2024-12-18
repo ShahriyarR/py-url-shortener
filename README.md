@@ -18,4 +18,10 @@ Create virtualenv in the project root directory named ".venv"
 
 `make run` or `make test`
 
+### Start
 
+We can use docker compose for local testing:
+
+`docker compose -f docker-compose.local.yml up`
+
+# TODO: Helm charts
