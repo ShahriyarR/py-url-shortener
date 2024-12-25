@@ -24,4 +24,24 @@ We can use docker compose for local testing:
 
 `docker compose -f docker-compose.local.yml up`
 
-# TODO: Helm charts
+# Helm charts
+
+Local Build images for Minikube:
+
+- `eval $(minikube docker-env)`
+- `cd ci`
+- `docker build -t url_shortener:latest -f ./Dockerfile_app ../`
+- `docker build -t custom_nginx:latest -f ./Dockerfile_nginx ./`
+
+Install using HELM:
+
+- `cd ci/kubernetes`
+- `helm install py-url-shortener .`
+
+For autoscaling we need to enable kubernetes metrics in minikube:
+
+`minikube addons enable metrics-server`
+
+If you want to see the local Minikube Dashboard and the statuses of the deployments, then in separate terminal, activate the dashboard:
+
+`minikube dashboard`

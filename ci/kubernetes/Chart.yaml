@@ -1,0 +1,10 @@
+---
+apiVersion: v2
+name: py-url-shortener
+description: A Helm chart for URL Shortener
+
+type: application
+version: 0.0.1
+
+sources:
+  - https://github.com/ShahriyarR/py-url-shortener
