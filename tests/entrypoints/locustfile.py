@@ -1,7 +1,7 @@
 from locust import HttpUser, task
 
 
-class HelloWorldUser(HttpUser):
+class CreateShortUrl(HttpUser):
     @task
-    def hello_world(self):
-        self.client.get("/url/2")
+    def create_short_urls(self):
+        self.client.post("/url", json={"original_url": "https://linkedin.com", "created_by": "Shako"})

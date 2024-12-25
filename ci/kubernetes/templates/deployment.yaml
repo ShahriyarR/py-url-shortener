@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: url-shortener
-        image: url_shortener:latest
+        image: url_shortener:0.0.1-beta2
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -55,6 +55,8 @@ spec:
         env:
           - name: REDIS_HOST
             value: redis-service
+          - name: SENTRY_DSN
+            value: "http://6b4eb1caf5254f4fb9bd2812fb7f586f@bugsink-service:8000/1"
 
 ---
 apiVersion: apps/v1
@@ -92,3 +94,30 @@ spec:
       - name: nginx-config-volume
         configMap:
           name: nginx-config
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bugsink
+spec:
+  selector:
+    matchLabels:
+      app: bugsink
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bugsink
+    spec:
+      containers:
+      - name: bugsink
+        image: bugsink/bugsink:latest
+        env:
+          - name: SECRET_KEY
+            value: QgNtI6CO8n2yp2lnhxoEaHSppicaAy6sfFM1Jn7cyEJfwQ1Elj # Must be in vault
+          - name: CREATE_SUPERUSER
+            value: admin:admin
+          - name: PORT
+            value: "8000"
+
