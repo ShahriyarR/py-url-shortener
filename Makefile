@@ -67,4 +67,4 @@ test-integration:
 	${PYTHON} -m pytest -svvv -m "integration" tests
 
 run:
-	${PYTHON} -m src.pytemplate.main
+	${PYTHON} -m sanic src.pyurlshortener.entrypoints.web.application:create_app --port 8080 --host 0.0.0.0 --reload --dev --workers 3
