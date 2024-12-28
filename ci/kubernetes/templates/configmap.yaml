@@ -9,6 +9,9 @@ data:
     }
 
     http {
+
+        limit_req_zone $binary_remote_addr zone=mylimit:10m rate=10r/s;
+
         upstream url_shortener {
             server url-shortener-service:8080;
         }
@@ -17,6 +20,7 @@ data:
             listen 80;
 
             location /url {
+                limit_req zone=mylimit burst=20 nodelay;
                 proxy_pass http://url_shortener/v1/api/url;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -25,6 +29,7 @@ data:
             }
 
             location /url/ {
+                limit_req zone=mylimit burst=20 nodelay;
                 proxy_pass http://url_shortener/v1/api/url/;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -33,3 +38,46 @@ data:
             }
         }
     }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush        1
+        Daemon       Off
+        Log_Level    info
+        Parsers_File parsers.conf
+
+    [INPUT]
+        Name             tail
+        Path             /var/log/containers/*.log
+        Parser           docker
+        Tag              kube.*
+
+    [FILTER]
+        Name           kubernetes
+        Match          kube.*
+        Kube_URL       https://kubernetes.default.svc:443
+        Kube_CA_File   /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    [OUTPUT]
+        Name            opensearch
+        Match           kube.*
+        Host            opensearch-service
+        Port            9200
+        Logstash_Format On
+        Suppress_Type_Name On
+        Logstash_Prefix kubernetes
+        Retry_Limit     False
+  parsers.conf: |
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
