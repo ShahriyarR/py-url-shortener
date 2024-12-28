@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: url-shortener
-        image: url_shortener:0.0.1-beta2
+        image: url_shortener:0.0.1-beta3
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -121,3 +121,64 @@ spec:
           - name: PORT
             value: "8000"
 
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch
+  template:
+    metadata:
+      labels:
+        app: opensearch
+    spec:
+      containers:
+      - name: opensearch
+        image: opensearchproject/opensearch:latest
+        env:
+        - name: discovery.type
+          value: "single-node"
+        - name: plugins.security.disabled
+          value: "true"
+        - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+          value: "6a!127af4f5ae6#2e7e1DD707ed58c857"
+        ports:
+        - containerPort: 9200
+        volumeMounts:
+        - name: opensearch-data
+          mountPath: /usr/share/opensearch/data
+      volumes:
+      - name: opensearch-data
+        emptyDir: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensearch-dashboards
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch-dashboards
+  template:
+    metadata:
+      labels:
+        app: opensearch-dashboards
+    spec:
+      containers:
+      - name: opensearch-dashboards
+        image: opensearchproject/opensearch-dashboards:latest
+        env:
+        - name: OPENSEARCH_HOSTS
+          value: "http://opensearch-service:9200"
+        - name: DISABLE_SECURITY_DASHBOARDS_PLUGIN
+          value: "true"
+        ports:
+        - containerPort: 5601

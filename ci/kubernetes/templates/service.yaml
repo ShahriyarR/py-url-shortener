@@ -48,3 +48,31 @@ spec:
       nodePort: 31000  # Expose on Minikube
   selector:
     app: bugsink
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch-service
+spec:
+  type: NodePort
+  ports:
+    - port: 9200
+      nodePort: 30920
+  selector:
+    app: opensearch
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch-dashboards
+spec:
+  type: NodePort
+  ports:
+    - port: 5601
+      nodePort: 30560
+  selector:
+    app: opensearch-dashboards
