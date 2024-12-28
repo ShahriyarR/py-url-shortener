@@ -9,6 +9,9 @@ data:
     }
 
     http {
+
+        limit_req_zone $binary_remote_addr zone=mylimit:10m rate=10r/s;
+
         upstream url_shortener {
             server url-shortener-service:8080;
         }
@@ -17,6 +20,7 @@ data:
             listen 80;
 
             location /url {
+                limit_req zone=mylimit burst=20 nodelay;
                 proxy_pass http://url_shortener/v1/api/url;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -25,6 +29,7 @@ data:
             }
 
             location /url/ {
+                limit_req zone=mylimit burst=20 nodelay;
                 proxy_pass http://url_shortener/v1/api/url/;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
