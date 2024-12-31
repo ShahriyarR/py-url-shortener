@@ -53,6 +53,8 @@ If you want to see the local Minikube Dashboard and the statuses of the deployme
 
 As infrastructure, we need to come up with the solutions which covers real-world scenarios, but using local Minikube:
 
+* For Web entrypoint API we use [Sanic](https://sanic.dev/en/).
+
 * For Observability logs, we use [Fluenbit](https://fluentbit.io/), 
 together with [Opensearch](https://opensearch.org/) and [Opensearch Dashboards](https://www.opensearch.org/docs/latest/dashboards/)
 
